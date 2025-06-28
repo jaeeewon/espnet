@@ -1,3 +1,8 @@
+# 적용하는 방법
+```code
+pip install -e .
+```
+
 <div align="left"><img src="doc/image/espnet_logo1.png" width="550"/></div>
 
 # ESPnet: end-to-end speech processing toolkit
