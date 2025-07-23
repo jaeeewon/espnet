@@ -123,7 +123,8 @@ tools/lightning_constraints.txt
 tools/versa
 tools/ParallelWaveGAN
 
-# ignore heavy models except for configure and images
+# ignore history except for configure, images and its report
 history/*/*/**
 !history/*/*/images/
 !history/*/*/images/**
+!history/*/*/RESULTS.md
