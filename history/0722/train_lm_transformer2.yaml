@@ -1,0 +1,60 @@
+# This configuration requires Tesla V100-SXM2(32GB) x 16 GPUs It takes about 2 days.
+# lr 0.005 -> 0.002
+# accum_grad 2 -> 4
+# 16개로 500,000,000 -> 나누면 26.3,_,_
+# 4090 1개로 10,000,000 시도
+# batch_bins 500,000,000
+# 100,000,000 -> 17GB | 97% 정도 | OOM
+# 150,000,000 -> 17GB | 99% 정도 | OOM
+# 125,000,000 | OOM
+# 100,000,000 | OOM
+# 75,000,000  | OOM
+# 20,000,000  | works // [hufs01] 2025-07-05 21:40:36,056 (trainer:780) INFO: 1epoch:train:25389-38082batch: iter_time=4.736e-04, forward_time=0.011, loss=2.069, backward_time=0.013, grad_norm=0.349, clip=0.000e+00, loss_scale=1.430e+07, optim_step_time=0.002, optim0_lr0=0.003, train_time=0.063
+# 50,000,000  | OOM
+# 45,000,000  | works with overfitting
+# 20,000,000  | 0.002 | worked
+# 10,000,000  | 0.001 | worked | overfitting
+
+# 교수님께서 batch_bins 줄인 비율만큼 accum_grad 늘려야 한다고 하심
+# batch_bins | accum_grad
+# 500,000,000 | 2 // default
+# 25,000,000 | 40 // 여전한 오버피팅
+
+# dropout_rate 0.3 > 0.5
+# 0.5가 torch.nn.Dropout의 기본값 https://github.com/pytorch/pytorch/blob/134179474539648ba7dee1317959529fbd0e7f89/torch/nn/modules/dropout.py#L22
+# warmup_steps는 초기에 학습률을 낮추어 오버피팅의 조기 발생을 예방케 해주는 것으로 보임
+# 우리의 지표는 전형적인 오버피팅이었으므로 극단적으로 올려봄
+# 25,000 -> 250,000 (x10)
+# weight_decay | asr에 있던 옵션 가져옴
+
+use_amp: true
+lm: transformer
+lm_conf:
+    pos_enc: null
+    embed_unit: 128
+    att_unit: 512
+    head: 8
+    unit: 2048
+    layer: 16
+    dropout_rate: 0.5
+
+# optimization related
+grad_clip: 5.0
+batch_type: numel
+batch_bins: 25000000
+accum_grad: 40
+max_epoch: 25
+
+optim: adam
+optim_conf:
+   lr: 0.003
+   weight_decay: 0.01
+scheduler: warmuplr
+scheduler_conf:
+   warmup_steps: 250000
+
+best_model_criterion:
+-   - valid
+    - loss
+    - min
+keep_nbest_models: 10

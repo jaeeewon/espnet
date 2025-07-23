@@ -122,4 +122,8 @@ tools/condarc
 tools/lightning_constraints.txt
 tools/versa
 tools/ParallelWaveGAN
-history
+
+# ignore heavy models except for configure and images
+history/*/*/**
+!history/*/*/images/
+!history/*/*/images/**
