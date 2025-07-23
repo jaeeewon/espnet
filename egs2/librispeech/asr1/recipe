@@ -1,0 +1,10 @@
+./run.sh --ngpu 1 --num_nodes 1 --skip_data_prep true --skip_train true --gpu_inference true --download_model "kamo-naoyuki/librispeech_asr_train_asr_conformer5_raw_bpe5000_scheduler_confwarmup_steps25000_batch_bins140000000_optim_conflr0.0015_initnone_accum_grad2_sp_valid.acc.ave" --pretrained_model "kamo-naoyuki/librispeech_asr_train_asr_conformer5_raw_bpe5000_scheduler_confwarmup_steps25000_batch_bins140000000_optim_conflr0.0015_initnone_accum_grad2_sp_valid.acc.ave"
+
+
+./run.sh --ngpu 1 --stage 7 --skip_data_prep true --skip_train false --stop_stage 8
+# 7: lm train
+# 11: asr train
+
+./run.sh --ngpu 1 --stage 7 --skip_data_prep true --skip_train false --gpu_inference true
+
+# --gpu_inference true

@@ -570,6 +570,7 @@ class Trainer:
         create_graph_in_tensorboard = options.create_graph_in_tensorboard
         distributed = distributed_option.distributed
 
+        # log_interval = 100
         if log_interval is None:
             try:
                 log_interval = max(len(iterator) // 20, 10)

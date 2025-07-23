@@ -1,4 +1,9 @@
 # Trained with Tesla V100 (32GB) x 4 GPUs. It takes about 3.5 days.
+
+# batch_bins 35,000,000 -> 15,000,000(accum_grads 손 대지 않았음) // 1회
+
+# batch_bins 35,000,000 -> 17,500,000 | accum_grads 4 -> 8
+
 encoder: conformer
 encoder_conf:
     output_size: 512
@@ -40,8 +45,8 @@ frontend_conf:
 use_amp: true
 num_workers: 4
 batch_type: numel
-batch_bins: 35000000
-accum_grad: 4
+batch_bins: 15000000
+accum_grad: 8
 max_epoch: 50
 patience: none
 init: none
