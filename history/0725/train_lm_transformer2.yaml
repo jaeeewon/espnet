@@ -1,0 +1,78 @@
+# This configuration requires Tesla V100-SXM2(32GB) x 16 GPUs It takes about 2 days.
+# lr 0.005 -> 0.002
+# accum_grad 2 -> 4
+# 16개로 500,000,000 -> 나누면 26.3,_,_
+# 4090 1개로 10,000,000 시도
+# batch_bins 500,000,000
+# 100,000,000 -> 17GB | 97% 정도 | OOM
+# 150,000,000 -> 17GB | 99% 정도 | OOM
+# 125,000,000 | OOM
+# 100,000,000 | OOM
+# 75,000,000  | OOM
+# 20,000,000  | works // [hufs01] 2025-07-05 21:40:36,056 (trainer:780) INFO: 1epoch:train:25389-38082batch: iter_time=4.736e-04, forward_time=0.011, loss=2.069, backward_time=0.013, grad_norm=0.349, clip=0.000e+00, loss_scale=1.430e+07, optim_step_time=0.002, optim0_lr0=0.003, train_time=0.063
+# 50,000,000  | OOM
+# 45,000,000  | works with overfitting
+# 20,000,000  | 0.002 | worked
+# 10,000,000  | 0.001 | worked | overfitting
+
+use_amp: true
+lm: transformer
+lm_conf:
+    pos_enc: null
+    embed_unit: 128
+    att_unit: 512
+    head: 8
+    unit: 2048
+    layer: 16
+    dropout_rate: 0.5
+    # dropout_rate 0.3 > 0.5
+    # 0.5가 torch.nn.Dropout의 기본값 https://github.com/pytorch/pytorch/blob/134179474539648ba7dee1317959529fbd0e7f89/torch/nn/modules/dropout.py#L22
+
+# optimization related
+grad_clip: 5.0
+# mini-batch 관련
+batch_type: numel
+# numel의 경우 shape 정보가 필수 // 과정 중에 있었음
+# https://espnet.github.io/espnet/espnet2_training_option.html#batch-type-numel
+batch_bins: 33000000
+accum_grad: 33
+# 교수님께서 batch_bins 줄인 비율만큼 accum_grad 늘려야 한다고 하심
+# batch_bins | accum_grad
+# 500,000,000 | 2 // default
+# 25,000,000 | 40 // 여전한 오버피팅
+# https://espnet.github.io/espnet/espnet2_training_option.html#gradient-accumulating
+
+max_epoch: 25
+patience: 3
+# Number of epochs to wait without improvement before stopping the training @espnet2/tasks/abs_task.py
+grad_noise: true
+# The flag to switch to use noise injection to gradients during training @espnet2/tasks/abs_task.py
+# create_graph_in_tensorboard: true
+# detect_anomaly: true
+# Set torch.autograd.set_detect_anomaly @espnet2/tasks/abs_task.py
+# detect_anomaly -> 성능 떨어지더라(전력도 덜 먹고 GPU 사용량이 확 떨어짐,, 찾느라 애먹었네ㅜ)
+
+optim: adam
+optim_conf:
+   lr: 0.005
+   weight_decay: 0.01 # asr에 있던 옵션 가져옴
+# https://docs.pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+# 아래 설정에 따라 lr이 조정되는 것으로 보임
+scheduler: warmuplr
+scheduler_conf:
+   warmup_steps: 5000
+    # warmup_steps는 초기에 학습률을 낮추어 오버피팅의 조기 발생을 예방케 해주는 것으로 보임
+    # 우리의 지표는 전형적인 오버피팅이었으므로 극단적으로 올려봄
+    # 25,000 -> 250,000 (x10) -> 50,000 -> 5,000 (모르겠어서 완전 작은 값으로,,)
+
+best_model_criterion:
+-   - valid
+    - loss
+    - min
+
+# espnet2/train.py에 따르면, n-best epoch와 지난 epoch를 제외한 모델 파일을 삭제한다고 함
+# 6. Remove the model files excluding n-best epoch and latest epoch
+keep_nbest_models: 10
+
+# max_cache_size: 23.5GB
+# RTX4090 24GB
