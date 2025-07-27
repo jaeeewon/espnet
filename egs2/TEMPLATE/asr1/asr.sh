@@ -1138,7 +1138,7 @@ if [ ${stage} -le 7 ] && [ ${stop_stage} -ge 7 ] && ! [[ " ${skip_stages} " =~ [
         --ngpu "${ngpu}" \
         --num_nodes "${num_nodes}" \
         --init_file_prefix "${lm_exp}"/.dist_init_ \
-        --multiprocessing_distributed true -- \
+        --multiprocessing_distributed false -- \
         ${python} -m espnet2.bin.lm_train \
             --ngpu "${ngpu}" \
             --use_preprocessor true \
@@ -1456,7 +1456,7 @@ if [ ${stage} -le 11 ] && [ ${stop_stage} -ge 11 ] && ! [[ " ${skip_stages} " =~
             --ngpu "${ngpu}" \
             --num_nodes "${num_nodes}" \
             --init_file_prefix "${asr_exp}"/.dist_init_ \
-            --multiprocessing_distributed true -- \
+            --multiprocessing_distributed false -- \
             ${python} -m espnet2.bin.${asr_task}_train \
                 --use_preprocessor true \
                 --bpemodel "${bpemodel}" \

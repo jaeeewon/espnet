@@ -8,3 +8,17 @@
 ./run.sh --ngpu 1 --stage 7 --skip_data_prep true --skip_train false --gpu_inference true
 
 # --gpu_inference true
+
+# https://github.com/espnet/espnet/issues/5135#issuecomment-1520226026
+
+# 3까지 하고 멈춤
+# 4부터 쭉 이어서
+
+
+# https://espnet.github.io/espnet/espnet2_tutorial.html#evaluation-without-training-using-pretrained-model
+# ./run.sh --download_model <model_name> --skip_train true
+
+
+# multiprocessing_distributed false로 함
+
+# tensorboard --logdir exp/*_train_*/tensorboard/

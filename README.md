@@ -3,6 +3,11 @@
 pip install -e .
 ```
 
+# Symlink
+`ln -s <org> <dest>`
+
+ex. ln -s /DB/librispeech/downloads /*path-to-espnet*/egs2/librispeech/asr1/downloads
+
 <div align="left"><img src="doc/image/espnet_logo1.png" width="550"/></div>
 
 # ESPnet: end-to-end speech processing toolkit
