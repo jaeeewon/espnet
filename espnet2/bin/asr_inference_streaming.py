@@ -81,6 +81,8 @@ class Speech2TextStreaming:
         )
         asr_model.to(dtype=getattr(torch, dtype)).eval()
 
+        print(type(asr_model.encoder))
+
         assert isinstance(
             asr_model.encoder, ContextualBlockTransformerEncoder
         ) or isinstance(asr_model.encoder, ContextualBlockConformerEncoder)

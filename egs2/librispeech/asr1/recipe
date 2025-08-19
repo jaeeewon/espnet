@@ -22,3 +22,7 @@
 # multiprocessing_distributed false로 함
 
 # tensorboard --logdir exp/*_train_*/tensorboard/
+
+
+# bpe 25,000으로 수정했으므로
+./run.sh --ngpu 1 --stage 5 --skip_data_prep false --skip_train false --gpu_inference true
